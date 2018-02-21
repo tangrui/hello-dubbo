@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>net.tangrui</groupId>
+    <artifactId>hello-dubbo</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>hello-service-provider</artifactId>
+  <packaging>jar</packaging>
+  <name>Hello Service Provider</name>
+
+  <properties>
+    <slf4j.version>1.7.25</slf4j.version>
+    <logback.version>1.2.3</logback.version>
+    <dubbo.version>2.6.0</dubbo.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <!-- 需要依赖服务的具体实现 -->
+      <groupId>net.tangrui</groupId>
+      <artifactId>hello-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- 引入日志组件 -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
+    </dependency>
+
+    <!-- 引入 Dubbo -->
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>dubbo</artifactId>
+      <version>${dubbo.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- 从依赖包中提取文件 -->
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.0.2</version>
+        <executions>
+          <!-- 在 package 阶段对指定的依赖包进行解压缩 -->
+          <execution>
+            <id>unpack</id>
+            <phase>package</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <!-- 指定依赖包的 groupId, artifactId 和 version -->
+                  <groupId>com.alibaba</groupId>
+                  <artifactId>dubbo</artifactId>
+                  <version>${dubbo.version}</version>
+                  <!-- 提取依赖包中 META-INF/assembly 目录下的所有内容（主要是可执行脚本） -->
+                  <includes>META-INF/assembly/**</includes>
+                  <!-- 输出到指定目录 -->
+                  <outputDirectory>${project.build.directory}/dubbo</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- 根据 assembly.xml 文件的配置将此项目重新打包 -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <!-- 指定 assembly.xml 文件的路径 -->
+          <descriptors>
+            <descriptor>src/main/assembly/assembly.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <!-- 在 package 阶段进行打包 -->
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- 在 Maven 中直接启动应用 -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <!-- 执行 java 命令 -->
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <!-- 执行指定类型下的 main 方法 -->
+          <mainClass>com.alibaba.dubbo.container.Main</mainClass>
+          <!-- 向 classpath 添加额外路径，主要包含配置文件 -->
+          <additionalClasspathElements>
+            <additionalClasspathElement>src/main/assembly/conf</additionalClasspathElement>
+          </additionalClasspathElements>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
