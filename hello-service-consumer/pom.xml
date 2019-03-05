@@ -13,41 +13,24 @@
         <version>0.1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>hello-service-provider</artifactId>
+    <artifactId>hello-service-consumer</artifactId>
     <packaging>jar</packaging>
-    <name>Hello Service Provider</name>
-
-    <properties>
-        <dubbo.version>2.6.2</dubbo.version>
-        <dubbo.extension.version>1.0.0</dubbo.extension.version>
-    </properties>
+    <name>Hello Service Consumer</name>
 
     <dependencies>
         <dependency>
             <groupId>com.alibaba.edas</groupId>
-            <artifactId>hello-core</artifactId>
+            <artifactId>hello-api</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jul-to-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
         <dependency>
@@ -60,8 +43,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot</artifactId>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
     </dependencies>
 
